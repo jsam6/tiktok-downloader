@@ -12,6 +12,8 @@ const url = {
             // 'https://www.tiktok.com/@aileenchristineee/video/6823846072973249797'
             let user = new User();
             let url = link.url
+
+            // Get username
             let username = url.match(/\@(\w+)\//)
             if (!username) return console.log('Cannot find user')
             user.setName(username[1])
@@ -27,12 +29,13 @@ const url = {
             const contentUrl = js.contentUrl // Get URL to video source
             
             // save video to lcoal folder
-            const destination = `./public/${user.getName()}`
+            const publicDir = `./public`
+            const destinationDir = `./public/${user.getName()}`
             // Check if folder exist, else create
-            if (!fs.existsSync(destination)){
-                fs.mkdirSync(destination);
+            if (!fs.existsSync(destinationDir)){
+                fs.mkdirSync(destinationDir);
             }
-            const fileName = fs.createWriteStream(`${destination}/${Date.now()}.mp4`);
+            const fileName = fs.createWriteStream(`${destinationDir}/${Date.now()}.mp4`);
 
             var request = https.get(contentUrl, function(resp) {
                 //save it
@@ -42,7 +45,7 @@ const url = {
                 });
                 console.log('success')
             }).on('error', function(err) { // Handle errors
-                fs.unlink(destination); // Delete the fileName async. (But we don't check the result)
+                fs.unlink(destinationDir); // Delete the fileName async. (But we don't check the result)
                 if (cb) cb(err.message);
             });
     }
