@@ -11,7 +11,7 @@ const url = {
     async download (link, cb) {
             // 'https://www.tiktok.com/@aileenchristineee/video/6823846072973249797'
             let user = new User();
-            let url = link.url
+            let url = link
 
             // Get username
             let username = url.match(/\@(\w+)\//)
@@ -38,6 +38,7 @@ const url = {
             const fileName = fs.createWriteStream(`${destinationDir}/${Date.now()}.mp4`);
 
             var request = https.get(contentUrl, function(resp) {
+                console.log('downloading....')
                 //save it
                 resp.pipe(fileName);
                 fileName.on('finish', function() {
