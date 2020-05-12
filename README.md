@@ -1,3 +1,7 @@
+# TODO
+
+i. Download all videos based on tiktoker's username
+
 # Project Overview
 Tiktok Downloader is a CLI build with node.js which aims to download videos of tiktokers.
 
