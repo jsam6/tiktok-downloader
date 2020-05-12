@@ -1,6 +1,14 @@
 # TODO
 
-i. Download all videos based on tiktoker's username
+* Clean up mkdir into ../utils
+
+* Download all videos based on tiktoker's username
+
+* Progress bar.
+
+* Skipped already downloaded videos.
+
+* Getting 'signature' in url parameters.
 
 # Project Overview
 Tiktok Downloader is a CLI build with node.js which aims to download videos of tiktokers.
@@ -15,7 +23,18 @@ Tiktok Downloader is a CLI build with node.js which aims to download videos of t
 
 example of command line:
 
-`tiktok-downloader --url https://www.tiktok.com/@aileenchristineee/video/6823846072973249797`
+
+```
+Download single video
+
+$ tiktok-downloader url https://www.tiktok.com/@aileenchristineee/video/6823846072973249797
+```
+
+```
+Download all videos of user
+
+$ tiktok-downloader user aileenchristineee
+```
 
 ##### Acknowledgment
 

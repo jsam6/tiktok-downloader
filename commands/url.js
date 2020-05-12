@@ -32,7 +32,9 @@ const url = {
             const publicDir = `./public`
             const destinationDir = `./public/${user.getName()}`
             // Check if folder exist, else create
-            if (!fs.existsSync(destinationDir)){
+            if (!fs.existsSync(publicDir)){
+                fs.mkdirSync(publicDir);
+            } else if (!fs.existsSync(destinationDir)){
                 fs.mkdirSync(destinationDir);
             }
             const fileName = fs.createWriteStream(`${destinationDir}/${Date.now()}.mp4`);

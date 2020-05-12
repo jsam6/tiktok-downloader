@@ -25,7 +25,9 @@ const url = {
         user.setTotalVideos( JSON.parse(appjson.html()).props.pageProps.userInfo.stats.videoCount)
         user.setId( JSON.parse(appjson.html()).props.pageProps.userInfo.user.id)
         user.setUniqueId( JSON.parse(appjson.html()).props.pageProps.userInfo.user.uniqueId)
+        user.setSecUid( JSON.parse(appjson.html()).props.pageProps.userInfo.user.secUid)
         user.setUrl(JSON.parse(appjson.html()).props.initialProps['$pageUrl'])
+        user.setAppId(JSON.parse(appjson.html()).props.initialProps['$appId'])
         user.setName(username)
 
 
@@ -36,6 +38,57 @@ const url = {
             + 'Total Videos: ' + user.getTotalVideos()
         )
 
+        let videoListUrl = constant.userVideoListUrl
+
+        let replacements = {
+            "%USERID%": user.getId(),
+            "%SECUID%": user.getSecUid(),
+            "%APPID%": user.getAppId(),
+            "%VERIFY%": constant.verifyFp,
+            "%SIGNATURE%": constant.signature,
+            "%COUNT%": 30,
+        }
+        videoListUrl = videoListUrl.replace(/%\w+%/g, function(all) {
+            return replacements[all] || all;
+        });
+
+        // Get List of Videos
+        let vListResp = await axios.get(videoListUrl, {headers: constant.headers})
+        console.log(vListResp.data)
+        let vData = []
+        for (const i of vListResp.data.items) {
+            let obj = {}
+            obj['id'] = i.id
+            obj['createTime'] = i.createTime
+            obj['downloadAddr'] = i.video.downloadAddr
+            vData.push(obj)
+        }
+
+
+        // save video to lcoal folder
+        const publicDir = `./public`
+        const destinationDir = `./public/${user.getName()}`
+        // Check if folder exist, else create
+        if (!fs.existsSync(publicDir)){
+            fs.mkdirSync(publicDir);
+        } else if (!fs.existsSync(destinationDir)){
+            fs.mkdirSync(destinationDir);
+        }
+        for (const x in vData) {
+            const fileName = fs.createWriteStream(`${destinationDir}/${vData[x].id}.mp4`);
+            var request = https.get(vData[x].downloadAddr, function(resp) {
+                console.log(`downloading....    [${x+1}/${vData.length}]`)
+                //save it
+                resp.pipe(fileName);
+                fileName.on('finish', function() {
+                    fileName.close();
+                });
+                console.log('success')
+            }).on('error', function(err) { // Handle errors
+                fs.unlink(destinationDir); // Delete the fileName async. (But we don't check the result)
+                console.log(err.message)
+            });
+        }
         
     }
 
